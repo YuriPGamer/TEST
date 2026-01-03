@@ -145,21 +145,32 @@
       // CONFIGURAÇÃO OBRIGATÓRIA DA API
       // Cole aqui a URL gerada no Apps Script (termina em /exec)
       // =========================================================
-      const API_URL = "https://script.google.com/macros/s/AKfycbwjuwuIUaREmo34IOVa4tOC1xiKwLw9ADwFQfsuoVsGUDR03eyRdTmwlWJqMH9lltJnYQ/exec"; 
+      const API_URL = "https://script.google.com/macros/s/AKfycbwjuwuIUaREmo34IOVa4tOC1xiKwLw9ADwFQfsuoVsGUDR03eyRdTmwlWJqMH9lltJnYQ/exec";
+      const API_TOKEN = "bLRp4yMQGLX7TGxGoERXWFlgE2JX4b6b"; // Tem que ser igual ao do GAS
 
       // --- ESTADO GLOBAL ---
       var DADOS_CACHE = {}; 
       var DADOS_RELATORIO_ATUAL = null; 
       var DADOS_NOTAS_ATUAL = null;     
 
-      // --- [NOVO] FUNÇÃO CONECTORA (Substitui o google.script.run) ---
+      // --- FUNÇÃO CONECTORA BLINDADA ---
       async function chamarAPI(action, payload = {}) {
-        const bodyData = { action: action, ...payload };
+        // Injeta o Token e a Ação no pacote
+        const bodyData = { 
+          token: API_TOKEN,
+          action: action, 
+          ...payload 
+        };
         
+        // O PULO DO GATO DO CORS:
+        // Usamos 'text/plain;charset=utf-8' para garantir que o navegador
+        // NÃO envie uma requisição OPTIONS (Preflight), que o GAS não suporta.
         const response = await fetch(API_URL, {
           method: "POST",
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8" 
+          },
           body: JSON.stringify(bodyData)
-          // Não definimos headers para evitar Preflight CORS options
         });
         
         const json = await response.json();
