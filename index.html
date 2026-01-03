@@ -319,6 +319,9 @@
 
       window.exibirCabecalho = function(dados) {
         DADOS_RELATORIO_ATUAL = dados;
+
+        // 1. VERIFICAÇÃO: Existe alguma observação válida?
+        const temObs = dados.trajetoria.some(t => t.existe && t.obs && String(t.obs).trim() !== "");
         
         let html = `
           <div class="m-card">
@@ -384,9 +387,12 @@
            <div class="mt-4 p-3 rounded" style="background-color: var(--background); border: 1px solid var(--outline-variant);">
               <div class="d-flex justify-content-between align-items-center mb-2">
                 <small class="text-secondary fw-bold text-uppercase">Observações</small>
+                
+                ${ temObs ? `
                 <button onclick="window.copiarObservacoes(this)" class="btn-action btn-sm" style="font-size: 0.75rem; padding: 0.25rem 0.8rem;">
                    <i class="fas fa-copy"></i> Copiar
-                </button>
+                </button>` : '' }
+
               </div>
               <ul class="mb-0 ps-3 small mt-2" style="color: var(--text-secondary)">
                 ${dados.trajetoria.map(t => t.existe && t.obs ? `<li><strong>${t.ano}:</strong> ${t.obs}</li>` : '').join('')}
