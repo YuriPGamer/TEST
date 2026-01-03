@@ -124,7 +124,7 @@
 
     <script>
       // =========================================================
-      // ⚠️ CONFIGURAÇÃO OBRIGATÓRIA DA API
+      // CONFIGURAÇÃO OBRIGATÓRIA DA API
       // Cole aqui a URL gerada no Apps Script (termina em /exec)
       // =========================================================
       const API_URL = "https://script.google.com/macros/s/AKfycbwjuwuIUaREmo34IOVa4tOC1xiKwLw9ADwFQfsuoVsGUDR03eyRdTmwlWJqMH9lltJnYQ/exec"; 
@@ -280,7 +280,7 @@
         
         document.getElementById('areaNotas').innerHTML = '';
         const area = document.getElementById('resultadoArea');
-        area.innerHTML = '<div class="text-center p-5"><div class="spinner-border text-primary"></div><p class="mt-2 text-secondary">Buscando dados no Google...</p></div>';
+        area.innerHTML = '<div class="text-center p-5"><div class="spinner-border text-primary"></div><p class="mt-2 text-secondary">Buscando dados</p></div>';
 
         // CHAMADA API
         chamarAPI('getRelatorioCabecalho', { ano: ano, turma: turma, aluno: aluno })
@@ -341,7 +341,7 @@
                     <tbody>
                       ${dados.trajetoria.map(t => {
                         if (t.existe) {
-                           return `<tr><td><b>${t.ano}</b></td><td>${t.ch}</td><td>${t.dias}</td><td>${t.faltas}</td><td>${t.porc}</td><td><span class="badge rounded-pill ${t.res==='AP'?'bg-success':'bg-secondary'}">${t.res}</span></td></tr>`;
+                           return `<tr><td>${t.ano}</td><td>${t.ch}</td><td>${t.dias}</td><td>${t.faltas}</td><td>${t.porc}</td><td><span class="badge rounded-pill ${t.res==='AP'?'bg-success':'bg-secondary'}">${t.res}</span></td></tr>`;
                         } else {
                            return `<tr><td class="text-secondary">${t.ano}</td><td class="text-secondary">-</td><td class="text-secondary">-</td><td class="text-secondary">-</td><td class="text-secondary">-</td><td class="text-secondary">-</td></tr>`;
                         }
