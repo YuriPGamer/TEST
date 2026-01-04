@@ -54,20 +54,13 @@
       }
 
       /* --- RESET & ESTRUTURA --- */
-      html {
-        /* Importante para evitar scroll horizontal fantasma */
-        width: 100%;
-        overflow-x: hidden;
-      }
+      html { width: 100%; overflow-x: hidden; }
 
       body { 
           width: 100%; 
-          min-height: 100dvh; /* Garante altura total */
+          min-height: 100dvh; 
           margin: 0; 
           padding: 0; 
-          
-          /* Removemos overscroll-behavior: none para permitir Refresh */
-          
           background-color: var(--background); 
           color: var(--text-main); 
           font-family: 'Roboto', sans-serif; 
@@ -123,41 +116,21 @@
       html[data-session="active"] #overlay-loading { display: flex !important; }
       html[data-session="active"] #app-container { display: block !important; }
 
-      /* --- TELA DE LOGIN (CORREÇÃO HÍBRIDA) --- */
+      /* --- CORREÇÃO HÍBRIDA TELA DE LOGIN (MOBILE) --- */
       #login-screen { 
-          position: fixed;
-          inset: 0;
-          width: 100%;
-          height: 100dvh; /* Altura exata da viewport */
-          
-          /* O PULO DO GATO: Overflow auto permite que o navegador 
-             entenda que este é um container rolável, ativando 
-             o pull-to-refresh nativo, mesmo sem barra de scroll visível */
-          overflow-y: auto; 
-          
-          /* Removemos touch-action: none para liberar o gesto */
-          
-          background: var(--background); 
-          z-index: 10000; 
-          display: flex; 
-          flex-direction: column; 
-          justify-content: center; 
-          align-items: center; 
+          position: fixed; inset: 0; width: 100%; height: 100dvh; 
+          overflow-y: auto; /* Permite pull-to-refresh */
+          background: var(--background); z-index: 10000; 
+          display: flex; flex-direction: column; justify-content: center; align-items: center; 
       }
 
       /* --- CORREÇÃO PISCADA DO BOTÃO GOOGLE --- */
       .g_id_signin {
-        /* Reserva o espaço vertical exato do botão (size=large é 40px) */
-        min-height: 40px;
-        
-        /* Evita que o container colapse horizontalmente antes de carregar */
-        min-width: 200px; 
-        
-        /* Garante que, enquanto carrega, o espaço vazio esteja centralizado */
+        min-height: 44px; /* Altura fixa padrão */
         display: flex;
         justify-content: center;
       }
-      
+    
     </style>
   </head>
   <body>
@@ -176,14 +149,17 @@
                  data-auto_select="false"
                  data-itp_support="true">
             </div>
+            
             <div class="g_id_signin" 
                  data-type="standard" 
                  data-shape="pill" 
                  data-theme="outline" 
                  data-text="signin_with" 
                  data-size="large" 
+                 data-width="300" 
                  data-logo_alignment="left">
             </div>
+            
             <div id="login-error" class="mt-3 text-danger small fw-bold text-center"></div>
         </div>
       </div>
