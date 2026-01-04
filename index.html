@@ -144,7 +144,20 @@
           justify-content: center; 
           align-items: center; 
       }
-    
+
+      /* --- CORREÇÃO PISCADA DO BOTÃO GOOGLE --- */
+      .g_id_signin {
+        /* Reserva o espaço vertical exato do botão (size=large é 40px) */
+        min-height: 40px;
+        
+        /* Evita que o container colapse horizontalmente antes de carregar */
+        min-width: 200px; 
+        
+        /* Garante que, enquanto carrega, o espaço vazio esteja centralizado */
+        display: flex;
+        justify-content: center;
+      }
+      
     </style>
   </head>
   <body>
