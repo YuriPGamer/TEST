@@ -2,14 +2,36 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RESULTADOS FINAIS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Resultados Finais</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <script>
+      (function() {
+        try {
+          if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+          }
+        } catch (e) {}
 
+        try {
+          const token = localStorage.getItem('appEscolar_token');
+          const lastActive = localStorage.getItem('appEscolar_lastActive');
+          const timeout = 25 * 60 * 1000; 
+          const agora = Date.now();
+
+          if (token && lastActive && (agora - parseInt(lastActive) < timeout)) {
+             document.documentElement.setAttribute('data-session', 'active');
+          }
+        } catch(e) {}
+      })();
+    </script>
+    
     <style>
+      /* --- VARIÁVEIS DE TEMA --- */
       :root {
         --primary: #005fa4; --on-primary: #ffffff; --primary-container: #d5e3ff; --on-primary-container: #001b3c;
         --success: #146c2e; --on-success: #ffffff; --background: #fdfcff; --surface: #fdfcff; --surface-container: #f0f4f9;
@@ -26,9 +48,12 @@
         --bg-header: #2a2d31; --table-stripe: rgba(168, 199, 250, 0.05);
         --shadow-sm: 0 1px 3px rgba(0,0,0,0.5); --shadow-md: 0 4px 15px rgba(0,0,0,0.5);
       }
-      html, body { width: 100%; min-height: 100vh; margin: 0; padding: 0; overflow-x: hidden; }
-      body { background-color: var(--background); color: var(--text-main); font-family: 'Roboto', sans-serif; transition: background-color 0.3s ease, color 0.3s ease; padding-bottom: 60px; -webkit-font-smoothing: antialiased; }
-      #overlay-loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--background); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+
+      /* --- ESTRUTURA GERAL --- */
+      html { width: 100%; overflow-x: hidden; }
+      body { width: 100%; min-height: 100dvh; margin: 0; padding: 0; background-color: var(--background); color: var(--text-main); font-family: 'Roboto', sans-serif; transition: background-color 0.3s ease, color 0.3s ease; padding-bottom: 60px; -webkit-font-smoothing: antialiased; }
+      
+      #overlay-loading { position: fixed; inset: 0; background: var(--background); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
       .app-bar { background-color: var(--surface-container); padding: 1rem 1.5rem; border-radius: 0 0 var(--radius-card) var(--radius-card); display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border: 1px solid var(--outline-variant); border-top: none; }
       .app-title { font-weight: 700; color: var(--primary); font-size: 1.25rem; }
       .m-card { background-color: var(--surface-container); border-radius: var(--radius-card); padding: 1.5rem; border: 1px solid var(--outline-variant); margin-bottom: 1.5rem; }
@@ -37,53 +62,85 @@
       .table-striped > tbody > tr:nth-of-type(odd) > td { background-color: var(--table-stripe) !important; box-shadow: inset 0 0 0 9999px var(--table-stripe) !important; }
       .table-hover tbody tr:hover td { background-color: var(--primary-container) !important; color: var(--on-primary-container) !important; box-shadow: inset 0 0 0 9999px var(--primary-container) !important; }
       .table-hover tbody tr:hover td .text-secondary { color: var(--on-primary-container) !important; opacity: 0.8; }
+      .table-responsive { overflow-x: auto; margin-bottom: 1rem; scrollbar-width: thin; scrollbar-color: var(--outline) transparent; }
       .form-label { font-size: 0.85rem; color: var(--text-secondary); font-weight: 500; margin-bottom: 6px; margin-left: 4px; }
-      .form-select { background-color: var(--background); border: 1px solid var(--outline); color: var(--text-main); border-radius: 12px; padding: 0.75rem 1rem; transition: border-color 0.2s, box-shadow 0.2s; }
+      .form-select, .form-control { background-color: var(--background); border: 1px solid var(--outline); color: var(--text-main); border-radius: 12px; padding: 0.75rem 1rem; transition: border-color 0.2s, box-shadow 0.2s; }
       .form-select:disabled { background-color: var(--outline-variant); opacity: 0.4; border-color: transparent; }
       .form-select:focus { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary-container); outline: none; }
       .btn-icon { background: transparent; border: none; color: var(--text-secondary); font-size: 1.2rem; width: 40px; height: 40px; border-radius: 50%; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; }
       .btn-icon:hover { background-color: var(--primary-container); color: var(--on-primary-container); }
       .btn-action { background-color: var(--primary); color: var(--on-primary); border: none; border-radius: var(--radius-btn); padding: 0.5rem 1.2rem; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s ease; box-shadow: var(--shadow-sm); }
-            /* Adicione este bloco logo abaixo de .btn-action no seu CSS */
-      .btn-action.btn-sm {
-        padding: 0.25rem 0.8rem !important;
-        font-size: 0.75rem !important;
-      }
+      .btn-action.btn-sm { padding: 0.25rem 0.8rem !important; font-size: 0.75rem !important; }
       .btn-action:hover { filter: brightness(1.1); transform: translateY(-1px); box-shadow: var(--shadow-md); }
       .btn-action.success-state { background-color: var(--success) !important; color: var(--on-success) !important; pointer-events: none; box-shadow: none; }
       .badge-pill { background-color: var(--primary-container); color: var(--on-primary-container); padding: 0.35em 1em; border-radius: 12px; font-size: 0.8rem; font-weight: 600; }
+      .meta-tag { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 8px; border: 1px solid var(--outline-variant); color: var(--text-secondary); font-size: 0.8rem; font-weight: 500; background-color: transparent; }
+      .meta-tag i { color: var(--primary); font-size: 0.9rem; }
       .modal-content { background-color: var(--surface-container); color: var(--text-main); border: 1px solid var(--outline-variant); border-radius: var(--radius-card); }
       .modal-header, .modal-footer { border-color: var(--outline-variant); }
       .btn-close { filter: invert(0.5); } [data-theme="dark"] .btn-close { filter: invert(1); }
-      .table-responsive { overflow-x: auto; margin-bottom: 1rem; scrollbar-width: thin; scrollbar-color: var(--outline) transparent; }
+      .header-style { background-color: var(--bg-header); color: var(--text-secondary); font-family: 'Roboto', sans-serif; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; border-bottom: 1px solid var(--outline-variant); padding: 12px; display: block; border-radius: 4px; }
+   
+      /* --- CONTROLE DE SESSÃO --- */
+      html[data-session="active"] #login-screen { display: none !important; }
+      html[data-session="active"] #overlay-loading { display: flex !important; }
+      html[data-session="active"] #app-container { display: block !important; }
 
-      .meta-tag {
-        display: inline-flex;
+      /* --- TELA DE LOGIN --- */
+      #login-screen { position: fixed; inset: 0; width: 100%; height: 100dvh; overflow-y: auto; background: var(--background); z-index: 10000; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+
+      /* --- CONTENÇÃO RÍGIDA DO BOTÃO (O SEGREDO ANTI-TREME) --- */
+      .google-placeholder-rigid {
+        /* Define tamanho FIXO e IMUTÁVEL */
+        width: 250px; 
+        height: 44px;
+        
+        /* Centraliza o conteúdo se ele for menor */
+        display: flex;
+        justify-content: center;
         align-items: center;
-        gap: 6px;
-        padding: 4px 12px;
-        border-radius: 8px; /* Canto menos arredondado, mais técnico */
-        border: 1px solid var(--outline-variant);
-        color: var(--text-secondary);
-        font-size: 0.8rem;
-        font-weight: 500;
-        background-color: transparent; /* Remove o fundo colorido */
+        
+        /* Se o botão do Google tentar crescer além disso, corta ele (mas não mexe no layout) */
+        overflow: hidden;
+        
+        /* Garante margem para não colar no texto de erro */
+        margin-bottom: 1rem;
+        
+        /* Cor de fundo opcional para ver a "caixa" enquanto carrega (como um esqueleto) */
+        /* background-color: var(--surface-container); */
+        border-radius: 22px; 
       }
-      
-      .meta-tag i {
-        color: var(--primary); /* O ícone mantém a cor da marca, sutilmente */
-        font-size: 0.9rem;
-      }
+    
     </style>
   </head>
   <body>
     
-    <div id="overlay-loading">
+    <div id="login-screen">
+      <div class="m-card p-5" style="border: 1px solid var(--outline-variant); max-width: 400px; width: 90%;">
+        <div class="text-center mb-4">
+           <i class="fas fa-graduation-cap fa-3x mb-3" style="color: var(--primary)"></i>
+           <h4 class="mb-2">Acesso Restrito</h4>
+           <p class="text-secondary small mb-0">Faça login com sua conta institucional<br>para acessar o sistema.</p>
+        </div>
+        
+        <div class="d-flex flex-column align-items-center justify-content-center w-100">
+            
+            <div class="google-placeholder-rigid">
+                <div id="btn-google-area"></div>
+            </div>
+            
+            <div id="login-error" class="text-danger small fw-bold text-center"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="overlay-loading" style="display: none;">
       <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;"></div>
       <p class="mt-3 small fw-bold" style="color: var(--text-secondary); letter-spacing: 1px;">CONECTANDO</p>
     </div>
 
-    <div class="container">
+    <div class="container" id="app-container" style="display: none;">
+      
       <div class="app-bar">
         <div class="d-flex align-items-center gap-2">
           <i class="fas fa-graduation-cap fa-lg" style="color: var(--primary)"></i>
@@ -96,7 +153,7 @@
       </div>
 
       <div class="m-card">
-        <h5 class="mb-3" style="color: var(--primary); font-weight: 700;">FILTROS DE BUSCA</h5>
+        <h5 class="mb-3" style="color: var(--text-secondary); font-weight: 700; font-size: 1.25rem;">FILTROS DE BUSCA</h5>
         <div class="row g-3">
           <div class="col-md-3">
             <label class="form-label">Ano Letivo</label>
@@ -120,24 +177,27 @@
     <div class="modal fade" id="modalConfig" tabindex="-1">
       <div class="modal-dialog mt-5">
         <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Configurar Tabulação</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-          </div>
+          <div class="modal-header"><h5 class="modal-title">Configurações</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
           <div class="modal-body">
-            <p class="small text-secondary">Ajuste as células mescladas para cópia no Excel.</p>
-            <div class="mb-3">
-              <label class="form-label">Módulo Aproveitamento</label>
-              <input type="number" id="cfgNotas" class="form-control" min="1">
+            
+            <h6 class="text-secondary small fw-bold text-uppercase mb-3">Exportação</h6>
+            <div class="mb-3"><label class="form-label">Tabulação Aproveitamento</label><input type="number" id="cfgNotas" class="form-control" min="1"></div>
+            <div class="mb-3"><label class="form-label">Tabulação Situação Final</label><input type="number" id="cfgSituacao" class="form-control" min="1"></div>
+            <div class="d-flex gap-2 mb-4">
+               <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill" onclick="window.resetarConfig()">Padrão</button>
+               <button type="button" class="btn btn-action btn-sm" onclick="window.salvarConfig()" data-bs-dismiss="modal">Salvar</button>
             </div>
-            <div class="mb-3">
-              <label class="form-label">Módulo Situação Final</label>
-              <input type="number" id="cfgSituacao" class="form-control" min="1">
+            
+            <hr class="my-4" style="border-color: var(--outline-variant);">
+            
+            <h6 class="text-secondary small fw-bold text-uppercase mb-3">Conta</h6>
+            <div class="p-3 rounded d-flex align-items-center justify-content-between" style="background-color: var(--background); border: 1px solid var(--outline-variant);">
+               <div class="d-flex align-items-center gap-3">
+                  <div class="d-flex align-items-center justify-content-center rounded-circle" style="width: 40px; height: 40px; background-color: var(--primary-container); color: var(--on-primary-container);"><i class="fas fa-user"></i></div>
+                  <div style="line-height: 1.2;"><span class="d-block small text-secondary">Logado como</span><span id="lblUserEmail" class="fw-bold" style="font-size: 0.9rem;">...</span></div>
+               </div>
+               <button onclick="window.fazerLogout()" class="btn btn-sm btn-outline-danger rounded-pill px-3" data-bs-dismiss="modal">Sair</button>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-outline-secondary btn-sm me-auto rounded-pill" onclick="window.resetarConfig()">Padrão</button>
-            <button type="button" class="btn btn-action" onclick="window.salvarConfig()" data-bs-dismiss="modal">Salvar</button>
           </div>
         </div>
       </div>
@@ -147,391 +207,232 @@
 
     <script>
       // =========================================================
-      // CONFIGURAÇÃO OBRIGATÓRIA DA API
-      // Cole aqui a URL gerada no Apps Script (termina em /exec)
+      // CONFIGURAÇÕES GERAIS
       // =========================================================
       const API_URL = "https://script.google.com/macros/s/AKfycbwjuwuIUaREmo34IOVa4tOC1xiKwLw9ADwFQfsuoVsGUDR03eyRdTmwlWJqMH9lltJnYQ/exec";
-      const API_TOKEN = "bLRp4yMQGLX7TGxGoERXWFlgE2JX4b6b"; // Tem que ser igual ao do GAS
+      const CLIENT_ID_GOOGLE = "10938455862-2def58pdbq68jn5encbplrfl5nhcndpl.apps.googleusercontent.com"; 
+      
+      const SESSAO_TIMEOUT_MS = 25 * 60 * 1000; 
+      const KEY_TOKEN = "appEscolar_token";
+      const KEY_LAST_ACTIVE = "appEscolar_lastActive";
 
-      // --- ESTADO GLOBAL ---
+      var USER_TOKEN = null;
       var DADOS_CACHE = {}; 
       var DADOS_RELATORIO_ATUAL = null; 
-      var DADOS_NOTAS_ATUAL = null;     
+      var DADOS_NOTAS_ATUAL = null; 
+      var TIMER_CHECK = null; 
+      var BOTAO_JA_RENDERIZADO = false;
 
-      // --- FUNÇÃO CONECTORA BLINDADA ---
-      async function chamarAPI(action, payload = {}) {
-        // Injeta o Token e a Ação no pacote
-        const bodyData = { 
-          token: API_TOKEN,
-          action: action, 
-          ...payload 
-        };
-        
-        // O PULO DO GATO DO CORS:
-        // Usamos 'text/plain;charset=utf-8' para garantir que o navegador
-        // NÃO envie uma requisição OPTIONS (Preflight), que o GAS não suporta.
-        const response = await fetch(API_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "text/plain;charset=utf-8" 
-          },
-          body: JSON.stringify(bodyData)
-        });
-        
-        const json = await response.json();
-        
-        if (json.error) {
-          throw new Error(json.error);
+      // =========================================================
+      // GESTÃO DE SESSÃO & LOGIN GOOGLE
+      // =========================================================
+      
+      function verificarSessaoSalva() {
+        const tokenSalvo = localStorage.getItem(KEY_TOKEN);
+        const lastActive = localStorage.getItem(KEY_LAST_ACTIVE);
+        const agora = Date.now();
+
+        if (tokenSalvo && lastActive) {
+          if ((agora - parseInt(lastActive)) < SESSAO_TIMEOUT_MS) {
+            USER_TOKEN = tokenSalvo;
+            return true;
+          } else {
+            console.warn("Sessão expirada localmente.");
+            window.fazerLogout();
+            return false;
+          }
         }
+        return false;
+      }
+
+      function atualizarAtividade() {
+        if(USER_TOKEN) localStorage.setItem(KEY_LAST_ACTIVE, Date.now());
+      }
+
+      function iniciarMonitoramentoInatividade() {
+        if (TIMER_CHECK) clearInterval(TIMER_CHECK);
+        TIMER_CHECK = setInterval(() => {
+          const lastActive = localStorage.getItem(KEY_LAST_ACTIVE);
+          if (lastActive) {
+            if ((Date.now() - parseInt(lastActive)) >= SESSAO_TIMEOUT_MS) {
+              window.fazerLogout();
+              alert("Sua sessão expirou por inatividade.");
+            }
+          }
+        }, 60 * 1000); 
+      }
+
+      // =========================================================
+      // CONTROLE DE RENDERIZAÇÃO DO GOOGLE (STANDARD RÍGIDO)
+      // =========================================================
+
+      window.onGoogleLibraryLoad = function() {
+        tentarRenderizarBotao();
+      };
+
+      function tentarRenderizarBotao() {
+        if (verificarSessaoSalva() || BOTAO_JA_RENDERIZADO) return;
+
+        if (window.google) {
+           google.accounts.id.initialize({
+              client_id: CLIENT_ID_GOOGLE,
+              callback: handleCredentialResponse,
+              auto_select: false
+           });
+           
+           google.accounts.id.renderButton(
+              document.getElementById("btn-google-area"),
+              { 
+                theme: "outline", 
+                size: "large", 
+                shape: "pill",
+                width: 250 // Deve bater com a largura da div .google-placeholder-rigid
+              }
+           );
+           
+           google.accounts.id.prompt(); 
+           BOTAO_JA_RENDERIZADO = true;
+        }
+      }
+
+      function handleCredentialResponse(response) {
+        USER_TOKEN = response.credential;
+        localStorage.setItem(KEY_TOKEN, USER_TOKEN);
+        localStorage.setItem(KEY_LAST_ACTIVE, Date.now());
+
+        const dadosUser = parseJwt(USER_TOKEN);
+        if (dadosUser && dadosUser.email) {
+          document.getElementById('lblUserEmail').innerText = dadosUser.email;
+        }
+
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('overlay-loading').style.display = 'flex';
+        
+        chamarAPI('getHierarquiaDados')
+          .then(dados => {
+            window.inicializarApp(dados);
+            document.getElementById('overlay-loading').style.display = 'none';
+            document.getElementById('app-container').style.display = 'block';
+            iniciarMonitoramentoInatividade();
+          })
+          .catch(e => {
+            document.getElementById('overlay-loading').style.display = 'none';
+            document.getElementById('login-screen').style.display = 'flex';
+            document.getElementById('login-error').innerText = e.message; 
+            window.fazerLogout();
+          });
+      }
+
+      window.fazerLogout = function() {
+        USER_TOKEN = null;
+        DADOS_CACHE = {}; DADOS_RELATORIO_ATUAL = null; DADOS_NOTAS_ATUAL = null;
+        
+        localStorage.removeItem(KEY_TOKEN);
+        localStorage.removeItem(KEY_LAST_ACTIVE);
+        if (TIMER_CHECK) clearInterval(TIMER_CHECK);
+        
+        document.documentElement.removeAttribute('data-session');
+
+        document.getElementById('resultadoArea').innerHTML = '';
+        document.getElementById('areaNotas').innerHTML = '';
+        document.getElementById('selAno').innerHTML = '<option value="" selected disabled>Carregando...</option>';
+        document.getElementById('selTurma').disabled = true;
+        document.getElementById('selAluno').disabled = true;
+
+        document.getElementById('app-container').style.display = 'none';
+        document.getElementById('login-screen').style.display = 'flex';
+        
+        BOTAO_JA_RENDERIZADO = false;
+        tentarRenderizarBotao();
+        
+        if (window.google) google.accounts.id.disableAutoSelect();
+      };
+
+      // =========================================================
+      // INICIALIZAÇÃO
+      // =========================================================
+      window.onload = function() {
+        try {
+          if (document.documentElement.getAttribute('data-theme') === 'dark') {
+             const icon = document.getElementById('icon-theme');
+             if(icon) icon.classList.replace('fa-moon', 'fa-sun');
+          }
+          window.carregarConfig();
+        } catch(e) {}
+        
+        if (verificarSessaoSalva()) {
+          const dadosUser = parseJwt(USER_TOKEN);
+          if (dadosUser && dadosUser.email) {
+             document.getElementById('lblUserEmail').innerText = dadosUser.email;
+          }
+
+          document.getElementById('login-screen').style.display = 'none';
+          document.getElementById('overlay-loading').style.display = 'flex';
+          
+          chamarAPI('getHierarquiaDados')
+            .then(dados => {
+              window.inicializarApp(dados);
+              document.documentElement.removeAttribute('data-session');
+              document.getElementById('overlay-loading').style.display = 'none';
+              document.getElementById('app-container').style.display = 'block';
+              iniciarMonitoramentoInatividade();
+            })
+            .catch(e => {
+              window.fazerLogout(); 
+            });
+        }
+      };
+
+      // =========================================================
+      // UTILITÁRIOS
+      // =========================================================
+      function parseJwt(token) {
+        try { return JSON.parse(decodeURIComponent(window.atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''))); } catch (e) { return null; }
+      }
+
+      async function chamarAPI(action, payload = {}) {
+        atualizarAtividade();
+        const bodyData = { userToken: USER_TOKEN, action: action, ...payload };
+        const response = await fetch(API_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(bodyData) });
+        const json = await response.json();
+        if (json.error) throw new Error(json.error);
         return json;
       }
 
-      // --- TEMA ---
       window.toggleTheme = function() {
-        const body = document.body;
+        const htmlTag = document.documentElement;
         const icon = document.getElementById('icon-theme');
-        const isDark = body.getAttribute('data-theme') === 'dark';
+        const isDark = htmlTag.getAttribute('data-theme') === 'dark';
         if (isDark) {
-          body.removeAttribute('data-theme');
+          htmlTag.removeAttribute('data-theme');
           if(icon) icon.classList.replace('fa-sun', 'fa-moon');
           localStorage.setItem('theme', 'light');
         } else {
-          body.setAttribute('data-theme', 'dark');
+          htmlTag.setAttribute('data-theme', 'dark');
           if(icon) icon.classList.replace('fa-moon', 'fa-sun');
           localStorage.setItem('theme', 'dark');
         }
       };
 
-      // --- INICIALIZAÇÃO ---
-      window.onload = function() {
-        try {
-          const savedTheme = localStorage.getItem('theme');
-          const icon = document.getElementById('icon-theme');
-          if (savedTheme === 'dark') {
-            document.body.setAttribute('data-theme', 'dark');
-            if(icon) icon.classList.replace('fa-moon', 'fa-sun');
-          }
-          window.carregarConfig();
-        } catch(e) {}
-
-        // CHAMADA API ADAPTADA
-        chamarAPI('getHierarquiaDados')
-          .then(dados => window.inicializarApp(dados))
-          .catch(e => window.erroLoad(e));
-      };
-
-      // --- CONFIGURAÇÕES ---
-      window.carregarConfig = function() {
-        try {
-          const raw = localStorage.getItem('appEscolarConfig');
-          const cfg = raw ? JSON.parse(raw) : null;
-          if (cfg) {
-            if(document.getElementById('cfgNotas')) document.getElementById('cfgNotas').value = cfg.notas;
-            if(document.getElementById('cfgSituacao')) document.getElementById('cfgSituacao').value = cfg.situacao;
-          } else { window.resetarConfig(); }
-        } catch (e) { window.resetarConfig(); }
-      };
-
-      window.salvarConfig = function() {
-        const config = {
-          notas: parseInt(document.getElementById('cfgNotas').value) || 3,
-          situacao: parseInt(document.getElementById('cfgSituacao').value) || 9
-        };
-        localStorage.setItem('appEscolarConfig', JSON.stringify(config));
-      };
-
-      window.resetarConfig = function() {
-        if(document.getElementById('cfgNotas')) document.getElementById('cfgNotas').value = 3;
-        if(document.getElementById('cfgSituacao')) document.getElementById('cfgSituacao').value = 9;
-        window.salvarConfig();
-      };
-
-      // --- LÓGICA DE INTERFACE ---
-      window.limparTela = function() {
-        document.getElementById('resultadoArea').innerHTML = '';
-        document.getElementById('areaNotas').innerHTML = '';
-        DADOS_RELATORIO_ATUAL = null;
-        DADOS_NOTAS_ATUAL = null;
-      };
-
-      window.inicializarApp = function(dados) {
-        DADOS_CACHE = dados; 
-        const selAno = document.getElementById('selAno');
-        const anos = Object.keys(DADOS_CACHE).sort().reverse();
-        selAno.innerHTML = '<option value="" selected disabled>Selecione</option>';
-        anos.forEach(ano => {
-          let opt = document.createElement('option');
-          opt.value = ano; opt.text = ano; selAno.appendChild(opt);
-        });
-        const loader = document.getElementById('overlay-loading');
-        if(loader) loader.style.display = 'none';
-      };
-
-      window.erroLoad = function(e) { 
-        document.getElementById('overlay-loading').innerHTML = `<div class="alert alert-danger p-4">Erro de Conexão: ${e.message}</div>`;
-      };
-
-      // --- HANDLERS (CASCATA) ---
-      window.aoMudarAno = function() {
-        window.limparTela();
-        const ano = document.getElementById('selAno').value;
-        const selTurma = document.getElementById('selTurma');
-        const selAluno = document.getElementById('selAluno');
-        
-        selAluno.innerHTML = '<option value=""></option>'; selAluno.disabled = true;
-        if (!ano || !DADOS_CACHE[ano]) return;
-
-        const turmas = Object.keys(DADOS_CACHE[ano]).sort();
-        selTurma.innerHTML = '<option value="" selected disabled>Selecione</option>';
-        turmas.forEach(t => {
-          let opt = document.createElement('option');
-          opt.value = t; opt.text = t; selTurma.appendChild(opt);
-        });
-        selTurma.disabled = false;
-      };
-
-      window.aoMudarTurma = function() {
-        window.limparTela();
-        const ano = document.getElementById('selAno').value;
-        const turma = document.getElementById('selTurma').value;
-        const selAluno = document.getElementById('selAluno');
-        if (!ano || !turma || !DADOS_CACHE[ano][turma]) return;
-
-        const alunos = DADOS_CACHE[ano][turma].sort();
-        selAluno.innerHTML = '<option value="" selected disabled>Selecione</option>';
-        alunos.forEach(a => {
-          let opt = document.createElement('option');
-          opt.value = a; opt.text = a; selAluno.appendChild(opt);
-        });
-        selAluno.disabled = false;
-      };
-
-      // --- BUSCA E RENDERIZAÇÃO (ADAPTADO PARA API) ---
-      window.buscarRelatorio = function() {
-        const ano = document.getElementById('selAno').value;
-        const turma = document.getElementById('selTurma').value;
-        const aluno = document.getElementById('selAluno').value;
-        
-        document.getElementById('areaNotas').innerHTML = '';
-        const area = document.getElementById('resultadoArea');
-        area.innerHTML = '<div class="text-center p-5"><div class="spinner-border text-primary"></div><p class="mt-3 small fw-bold text-secondary text-uppercase">Buscando dados</p></div>';
-
-        // CHAMADA API
-        chamarAPI('getRelatorioCabecalho', { ano: ano, turma: turma, aluno: aluno })
-          .then(dados => window.exibirCabecalho(dados))
-          .catch(e => area.innerHTML = `<div class="alert alert-danger">Erro: ${e.message}</div>`);
-      };
-
-      window.exibirCabecalho = function(dados) {
-        DADOS_RELATORIO_ATUAL = dados;
-
-        // 1. VERIFICAÇÃO: Existe alguma observação válida?
-        const temObs = dados.trajetoria.some(t => t.existe && t.obs && String(t.obs).trim() !== "");
-        
-        let html = `
-          <div class="m-card">
-            <div class="d-flex justify-content-between align-items-start mb-4 border-bottom pb-3" style="border-color: var(--outline-variant) !important;">
-              <div>
-                <h4 class="mb-3" style="color: var(--text-secondary); font-weight: 700; font-size: 1.25rem;">${dados.aluno}</h4>
-                
-                <div class="d-flex flex-wrap gap-2 mt-2">
-                  <span class="meta-tag" title="Oferta Concomitante">
-                    <i class="fas fa-layer-group"></i> ${dados.oc}
-                  </span>
-                  <span class="meta-tag" title="Código SISTEC">
-                    <i class="fas fa-fingerprint"></i> ${dados.sistec}
-                  </span>
-                  <span class="meta-tag" title="Anos com Resultado Final">
-                    <i class="fas fa-calendar-check"></i> ${dados.anosRegistrados}
-                  </span>
-                </div>
-
-              </div>
-            </div>
-
-            <div class="row g-4">
-              <div class="col-md-4">
-                <div class="d-flex align-items-center mb-3" style="height: 32px;">
-                   <h6 class="text-secondary mb-0 text-uppercase small ls-1 fw-bold">Trajetória</h6>
-                </div>
-                <div class="table-responsive">
-                  <table class="table table-sm table-hover text-center">
-                    <thead><tr><th>Ano</th><th>Turma</th></tr></thead>
-                    <tbody>
-                      ${dados.trajetoria.map(t => `<tr><td>${t.ano}</td><td>${t.turma}</td></tr>`).join('')}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              <div class="col-md-8">
-                 <div class="d-flex justify-content-between align-items-center mb-3" style="height: 32px;">
-                    <h6 class="text-secondary mb-0 text-uppercase small ls-1 fw-bold">Situação Final</h6>
-                    <button onclick="window.copiarSituacao(this)" class="btn-action btn-sm">
-                      <i class="fas fa-copy"></i> Copiar
-                    </button>
-                 </div>
-                 
-                 <div class="table-responsive">
-                  <table class="table table-sm table-hover text-center align-middle">
-                    <thead><tr><th>Ano</th><th>CH</th><th>Dias</th><th>Faltas</th><th>%</th><th>Res</th></tr></thead>
-                    <tbody>
-                      ${dados.trajetoria.map(t => {
-                        if (t.existe) {
-                           return `<tr><td>${t.ano}</td><td>${t.ch}</td><td>${t.dias}</td><td>${t.faltas}</td><td>${t.porc}</td><td><span class="badge rounded-pill ${t.res==='AP'?'bg-success':'bg-secondary'}">${t.res}</span></td></tr>`;
-                        } else {
-                           return `<tr><td class="text-secondary">${t.ano}</td><td class="text-secondary">-</td><td class="text-secondary">-</td><td class="text-secondary">-</td><td class="text-secondary">-</td><td class="text-secondary">-</td></tr>`;
-                        }
-                      }).join('')}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-            
-           <div class="mt-4 p-3 rounded" style="background-color: var(--background); border: 1px solid var(--outline-variant);">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <small class="text-secondary fw-bold text-uppercase">Observações</small>
-                
-                ${ temObs ? `
-                <button onclick="window.copiarObservacoes(this)" class="btn-action btn-sm">
-                   <i class="fas fa-copy"></i> Copiar
-                </button>` : '' }
-
-              </div>
-              <ul class="mb-0 ps-3 small mt-2" style="color: var(--text-secondary)">
-                ${dados.trajetoria.map(t => t.existe && t.obs ? `<li><strong>${t.ano}:</strong> ${t.obs}</li>` : '').join('')}
-              </ul>
-            </div>
-          </div>
-        `;
-
-        document.getElementById('resultadoArea').innerHTML = html;
-        window.carregarTabelaNotas(dados.aluno, dados.oc, dados.trajetoria);
-      };
-
-      window.carregarTabelaNotas = function(aluno, oc, trajetoria) {
-        const divNotas = document.getElementById('areaNotas');
-        divNotas.innerHTML = '<div class="text-center mt-4"><div class="spinner-grow text-primary spinner-grow-sm"></div><span class="ms-3 small fw-bold text-secondary text-uppercase">Carregando notas</span></div>';
-
-        // CHAMADA API
-        chamarAPI('getTabelaNotas', { aluno: aluno, oc: oc, trajetoria: trajetoria })
-          .then(tabela => {
-             DADOS_NOTAS_ATUAL = tabela;
-             window.renderizarTabelaFinal(tabela, trajetoria);
-          })
-          .catch(e => divNotas.innerHTML = `<div class="alert alert-danger">Erro Notas: ${e.message}</div>`);
-      };
-
-      window.renderizarTabelaFinal = function(tabela, trajetoria) {
-        let html = `
-          <div class="m-card">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-               <h6 class="text-secondary mb-0 text-uppercase small ls-1 fw-bold">APROVEITAMENTO</h6>
-               <button onclick="window.copiarNotas(this)" class="btn-action btn-sm"><i class="fas fa-copy"></i> Copiar</button>
-            </div>
-            <div class="table-responsive">
-              <table class="table table-hover table-bordered text-center align-middle" style="font-size: 0.85rem;">
-                <thead>
-                  <tr>
-                    <th rowspan="2" class="align-middle">DISCIPLINA</th>
-                    ${trajetoria.map((t) => `<th colspan="3" class="${t.existe ? '' : 'text-muted'}">${t.existe ? t.turma : t.ano}</th>`).join('')}
-                  </tr>
-                  <tr>${trajetoria.map(() => `<th class="text-secondary small">PTS</th><th class="text-secondary small">CH</th><th class="text-secondary small">FT</th>`).join('')}</tr>
-                </thead>
-                <tbody>
-                  ${tabela.map(linha => `
-                    <tr>
-                      <td class="text-start fw-bold text-nowrap">${linha.disciplina}</td>
-                      ${linha.anos.map(ano => `<td>${ano.nota}</td><td>${ano.ch}</td><td>${ano.falta}</td>`).join('')}
-                    </tr>
-                  `).join('')}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        `;
-        document.getElementById('areaNotas').innerHTML = html;
-      };
-
-      // --- CÓPIA (CLIPBOARD) ---
-      window.formatarCelula = function(valor, mesclagem) {
-        if (!valor) valor = "-";
-        const tabs = "\t".repeat(Math.max(0, mesclagem - 1));
-        return valor + tabs;
-      };
-      window.copiarNotas = function(btnElement) {
-        if (!DADOS_NOTAS_ATUAL) return;
-        const cfg = { notas: parseInt(document.getElementById('cfgNotas').value) || 3 };
-        let texto = "";
-        DADOS_NOTAS_ATUAL.forEach(linha => {
-          let linhaTexto = "";
-          linha.anos.forEach(ano => {
-            linhaTexto += window.formatarCelula(ano.nota, cfg.notas) + "\t" + window.formatarCelula(ano.ch, cfg.notas) + "\t" + window.formatarCelula(ano.falta, cfg.notas) + "\t";
-          });
-          texto += linhaTexto + "\n";
-        });
-        window.executarCopiaReal(texto, btnElement);
-      };
-      window.copiarSituacao = function(btnElement) {
-        if (!DADOS_RELATORIO_ATUAL) return;
-        const cfg = { situacao: parseInt(document.getElementById('cfgSituacao').value) || 9 };
-        const trajetoria = DADOS_RELATORIO_ATUAL.trajetoria;
-        let linhaCH = "", linhaDias = "", linhaFaltas = "", linhaPorc = "", linhaRes = "";
-        trajetoria.forEach(t => {
-          linhaCH += window.formatarCelula(t.existe ? t.ch : "-", cfg.situacao) + "\t";
-          linhaDias += window.formatarCelula(t.existe ? t.dias : "-", cfg.situacao) + "\t";
-          linhaFaltas += window.formatarCelula(t.existe ? t.faltas : "-", cfg.situacao) + "\t";
-          linhaPorc += window.formatarCelula(t.existe ? t.porc : "-", cfg.situacao) + "\t";
-          linhaRes += window.formatarCelula(t.existe ? t.res : "-", cfg.situacao) + "\t";
-        });
-        let texto = linhaCH + "\n" + linhaDias + "\n" + linhaFaltas + "\n" + linhaPorc + "\n" + linhaRes;
-        window.executarCopiaReal(texto, btnElement);
-      };
-      
-      // --- FUNÇÃO DE COPIAR OBSERVAÇÕES (ATUALIZADA) ---
-      window.copiarObservacoes = function(btnElement) {
-        if (!DADOS_RELATORIO_ATUAL) return;
-
-        // Filtra apenas anos que existem e têm observação preenchida
-        const listaObs = DADOS_RELATORIO_ATUAL.trajetoria
-          .filter(t => t.existe && t.obs && String(t.obs).trim() !== "")
-          .map(t => {
-            // ALTERAÇÃO: Retorna apenas o texto da observação.
-            // O ano foi removido.
-            return t.obs;
-          });
-
-        if (listaObs.length === 0) {
-          alert("Não há observações para copiar.");
-          return;
-        }
-
-        // Junta tudo com uma quebra de linha (\n)
-        // Isso preserva as quebras internas e adiciona uma quebra entre os anos
-        const textoFinal = listaObs.join("\n");
-
-        window.executarCopiaReal(textoFinal, btnElement);
-      };
-      
-      window.executarCopiaReal = function(texto, btn) {
-        const textarea = document.createElement('textarea');
-        textarea.value = texto;
-        textarea.style.position = 'fixed'; textarea.style.left = '0'; textarea.style.top = '0';
-        textarea.style.width = '1px'; textarea.style.height = '1px'; textarea.style.opacity = '0.1';
-        document.body.appendChild(textarea);
-        textarea.focus(); textarea.select();
-        try {
-          const ok = document.execCommand('copy');
-          if(ok && btn) {
-             const originalHTML = btn.innerHTML;
-             btn.innerHTML = '<i class="fas fa-check"></i> Copiado!';
-             btn.classList.add('success-state');
-             setTimeout(() => { btn.innerHTML = originalHTML; btn.classList.remove('success-state'); }, 2000);
-          }
-        } catch (err) { alert("Erro ao copiar."); }
-        document.body.removeChild(textarea);
-      };
+      window.carregarConfig = function() { try { const raw = localStorage.getItem('appEscolarConfig'); const cfg = raw ? JSON.parse(raw) : null; if (cfg) { if(document.getElementById('cfgNotas')) document.getElementById('cfgNotas').value = cfg.notas; if(document.getElementById('cfgSituacao')) document.getElementById('cfgSituacao').value = cfg.situacao; } else { window.resetarConfig(); } } catch (e) { window.resetarConfig(); } };
+      window.salvarConfig = function() { const config = { notas: parseInt(document.getElementById('cfgNotas').value) || 3, situacao: parseInt(document.getElementById('cfgSituacao').value) || 9 }; localStorage.setItem('appEscolarConfig', JSON.stringify(config)); };
+      window.resetarConfig = function() { if(document.getElementById('cfgNotas')) document.getElementById('cfgNotas').value = 3; if(document.getElementById('cfgSituacao')) document.getElementById('cfgSituacao').value = 9; window.salvarConfig(); };
+      window.limparTela = function() { document.getElementById('resultadoArea').innerHTML = ''; document.getElementById('areaNotas').innerHTML = ''; DADOS_RELATORIO_ATUAL = null; DADOS_NOTAS_ATUAL = null; };
+      window.inicializarApp = function(dados) { DADOS_CACHE = dados; const selAno = document.getElementById('selAno'); const anos = Object.keys(DADOS_CACHE).sort().reverse(); selAno.innerHTML = '<option value="" selected disabled>Selecione</option>'; anos.forEach(ano => { let opt = document.createElement('option'); opt.value = ano; opt.text = ano; selAno.appendChild(opt); }); };
+      window.aoMudarAno = function() { window.limparTela(); const ano = document.getElementById('selAno').value; const selTurma = document.getElementById('selTurma'); const selAluno = document.getElementById('selAluno'); selAluno.innerHTML = '<option value=""></option>'; selAluno.disabled = true; if (!ano || !DADOS_CACHE[ano]) return; const turmas = Object.keys(DADOS_CACHE[ano]).sort(); selTurma.innerHTML = '<option value="" selected disabled>Selecione</option>'; turmas.forEach(t => { let opt = document.createElement('option'); opt.value = t; opt.text = t; selTurma.appendChild(opt); }); selTurma.disabled = false; };
+      window.aoMudarTurma = function() { window.limparTela(); const ano = document.getElementById('selAno').value; const turma = document.getElementById('selTurma').value; const selAluno = document.getElementById('selAluno'); if (!ano || !turma || !DADOS_CACHE[ano][turma]) return; const alunos = DADOS_CACHE[ano][turma].sort(); selAluno.innerHTML = '<option value="" selected disabled>Selecione</option>'; alunos.forEach(a => { let opt = document.createElement('option'); opt.value = a; opt.text = a; selAluno.appendChild(opt); }); selAluno.disabled = false; };
+      window.buscarRelatorio = function() { const ano = document.getElementById('selAno').value; const turma = document.getElementById('selTurma').value; const aluno = document.getElementById('selAluno').value; document.getElementById('areaNotas').innerHTML = ''; const area = document.getElementById('resultadoArea'); area.innerHTML = '<div class="text-center p-5"><div class="spinner-border text-primary"></div><p class="mt-3 small fw-bold text-secondary text-uppercase">Buscando dados</p></div>'; chamarAPI('getRelatorioCabecalho', { ano: ano, turma: turma, aluno: aluno }).then(dados => window.exibirCabecalho(dados)).catch(e => area.innerHTML = `<div class="alert alert-danger">Erro: ${e.message}</div>`); };
+      window.exibirCabecalho = function(dados) { DADOS_RELATORIO_ATUAL = dados; const temObs = dados.trajetoria.some(t => t.existe && t.obs && String(t.obs).trim() !== ""); let html = `<div class="m-card"><div class="d-flex justify-content-between align-items-start mb-4 border-bottom pb-3" style="border-color: var(--outline-variant) !important;"><div><h4 class="mb-3" style="color: var(--text-secondary); font-weight: 700; font-size: 1.25rem;">${dados.aluno}</h4><div class="d-flex flex-wrap gap-2 mt-2"><span class="meta-tag" title="Oferta Concomitante"><i class="fas fa-layer-group"></i> ${dados.oc}</span><span class="meta-tag" title="Código SISTEC"><i class="fas fa-fingerprint"></i> ${dados.sistec}</span><span class="meta-tag" title="Anos com Resultado Final"><i class="fas fa-calendar-check"></i> ${dados.anosRegistrados}</span></div></div></div><div class="row g-4"><div class="col-md-4"><div class="d-flex align-items-center mb-3" style="height: 32px;"><h6 class="text-secondary mb-0 text-uppercase small ls-1 fw-bold">Trajetória</h6></div><div class="table-responsive"><table class="table table-sm table-hover text-center"><thead><tr><th>Ano</th><th>Turma</th></tr></thead><tbody>${dados.trajetoria.map(t => `<tr><td>${t.ano}</td><td>${t.turma}</td></tr>`).join('')}</tbody></table></div></div><div class="col-md-8"><div class="d-flex justify-content-between align-items-center mb-3" style="height: 32px;"><h6 class="text-secondary mb-0 text-uppercase small ls-1 fw-bold">Situação Final</h6><button onclick="window.copiarSituacao(this)" class="btn-action btn-sm"><i class="fas fa-copy"></i> Copiar</button></div><div class="table-responsive"><table class="table table-sm table-hover text-center align-middle"><thead><tr><th>Ano</th><th>CH</th><th>Dias</th><th>Faltas</th><th>%</th><th>Res</th></tr></thead><tbody>${dados.trajetoria.map(t => { if (t.existe) { return `<tr><td>${t.ano}</td><td>${t.ch}</td><td>${t.dias}</td><td>${t.faltas}</td><td>${t.porc}</td><td><span class="badge rounded-pill ${t.res==='AP'?'bg-success':'bg-secondary'}">${t.res}</span></td></tr>`; } else { return `<tr><td class="text-secondary">${t.ano}</td><td class="text-secondary">-</td><td class="text-secondary">-</td><td class="text-secondary">-</td><td class="text-secondary">-</td><td class="text-secondary">-</td></tr>`; } }).join('')}</tbody></table></div></div></div><div class="mt-4 p-3 rounded" style="background-color: var(--background); border: 1px solid var(--outline-variant);"><div class="d-flex justify-content-between align-items-center mb-2"><small class="text-secondary fw-bold text-uppercase">Observações</small>${ temObs ? `<button onclick="window.copiarObservacoes(this)" class="btn-action btn-sm"><i class="fas fa-copy"></i> Copiar</button>` : '' }</div><ul class="mb-0 ps-3 small mt-2" style="color: var(--text-secondary)">${dados.trajetoria.map(t => t.existe && t.obs ? `<li><strong>${t.ano}:</strong> ${t.obs}</li>` : '').join('')}</ul></div></div>`; document.getElementById('resultadoArea').innerHTML = html; window.carregarTabelaNotas(dados.aluno, dados.oc, dados.trajetoria); };
+      window.carregarTabelaNotas = function(aluno, oc, trajetoria) { const divNotas = document.getElementById('areaNotas'); divNotas.innerHTML = '<div class="text-center mt-4"><div class="spinner-grow text-primary spinner-grow-sm"></div><span class="ms-3 small fw-bold text-secondary text-uppercase">Carregando notas</span></div>'; chamarAPI('getTabelaNotas', { aluno: aluno, oc: oc, trajetoria: trajetoria }).then(tabela => { DADOS_NOTAS_ATUAL = tabela; window.renderizarTabelaFinal(tabela, trajetoria); }).catch(e => divNotas.innerHTML = `<div class="alert alert-danger">Erro Notas: ${e.message}</div>`); };
+      window.renderizarTabelaFinal = function(tabela, trajetoria) { let html = `<div class="m-card"><div class="d-flex justify-content-between align-items-center mb-3"><h6 class="text-secondary mb-0 text-uppercase small ls-1 fw-bold">APROVEITAMENTO</h6><button onclick="window.copiarNotas(this)" class="btn-action btn-sm"><i class="fas fa-copy"></i> Copiar</button></div><div class="table-responsive"><table class="table table-hover table-bordered text-center align-middle" style="font-size: 0.85rem;"><thead><tr><th rowspan="2" class="align-middle">DISCIPLINA</th>${trajetoria.map((t) => `<th colspan="3" class="${t.existe ? '' : 'text-muted'}">${t.existe ? t.turma : t.ano}</th>`).join('')}</tr><tr>${trajetoria.map(() => `<th class="text-secondary small">PTS</th><th class="text-secondary small">CH</th><th class="text-secondary small">FT</th>`).join('')}</tr></thead><tbody>${tabela.map(linha => `<tr><td class="text-start fw-bold text-nowrap">${linha.disciplina}</td>${linha.anos.map(ano => `<td>${ano.nota}</td><td>${ano.ch}</td><td>${ano.falta}</td>`).join('')}</tr>`).join('')}</tbody></table></div></div>`; document.getElementById('areaNotas').innerHTML = html; };
+      window.formatarCelula = function(valor, mesclagem) { if (!valor) valor = "-"; const tabs = "\t".repeat(Math.max(0, mesclagem - 1)); return valor + tabs; };
+      window.copiarNotas = function(btnElement) { if (!DADOS_NOTAS_ATUAL) return; const cfg = { notas: parseInt(document.getElementById('cfgNotas').value) || 3 }; let texto = ""; DADOS_NOTAS_ATUAL.forEach(linha => { let linhaTexto = ""; linha.anos.forEach(ano => { linhaTexto += window.formatarCelula(ano.nota, cfg.notas) + "\t" + window.formatarCelula(ano.ch, cfg.notas) + "\t" + window.formatarCelula(ano.falta, cfg.notas) + "\t"; }); texto += linhaTexto + "\n"; }); window.executarCopiaReal(texto, btnElement); };
+      window.copiarSituacao = function(btnElement) { if (!DADOS_RELATORIO_ATUAL) return; const cfg = { situacao: parseInt(document.getElementById('cfgSituacao').value) || 9 }; const trajetoria = DADOS_RELATORIO_ATUAL.trajetoria; let linhaCH = "", linhaDias = "", linhaFaltas = "", linhaPorc = "", linhaRes = ""; trajetoria.forEach(t => { linhaCH += window.formatarCelula(t.existe ? t.ch : "-", cfg.situacao) + "\t"; linhaDias += window.formatarCelula(t.existe ? t.dias : "-", cfg.situacao) + "\t"; linhaFaltas += window.formatarCelula(t.existe ? t.faltas : "-", cfg.situacao) + "\t"; linhaPorc += window.formatarCelula(t.existe ? t.porc : "-", cfg.situacao) + "\t"; linhaRes += window.formatarCelula(t.existe ? t.res : "-", cfg.situacao) + "\t"; }); let texto = linhaCH + "\n" + linhaDias + "\n" + linhaFaltas + "\n" + linhaPorc + "\n" + linhaRes; window.executarCopiaReal(texto, btnElement); };
+      window.copiarObservacoes = function(btnElement) { if (!DADOS_RELATORIO_ATUAL) return; const listaObs = DADOS_RELATORIO_ATUAL.trajetoria.filter(t => t.existe && t.obs && String(t.obs).trim() !== "").map(t => t.obs); if (listaObs.length === 0) { alert("Não há observações."); return; } const textoFinal = listaObs.join("\n"); window.executarCopiaReal(textoFinal, btnElement); };
+      window.executarCopiaReal = function(texto, btn) { const textarea = document.createElement('textarea'); textarea.value = texto; textarea.style.position = 'fixed'; textarea.style.left = '0'; textarea.style.top = '0'; textarea.style.width = '1px'; textarea.style.height = '1px'; textarea.style.opacity = '0.1'; document.body.appendChild(textarea); textarea.focus(); textarea.select(); try { const ok = document.execCommand('copy'); if(ok && btn) { const originalHTML = btn.innerHTML; btn.innerHTML = '<i class="fas fa-check"></i> Copiado!'; btn.classList.add('success-state'); setTimeout(() => { btn.innerHTML = originalHTML; btn.classList.remove('success-state'); }, 2000); } } catch (err) { alert("Erro ao copiar."); } document.body.removeChild(textarea); };
     </script>
+
+    <script src="https://accounts.google.com/gsi/client" async defer onload="window.onGoogleLibraryLoad()"></script>
+    
 </body>
 </html>
