@@ -56,7 +56,22 @@
       }
 
       /* --- RESET & ESTRUTURA --- */
-      html, body { width: 100%; min-height: 100vh; margin: 0; padding: 0; overflow-x: hidden; }
+      html, body { 
+          width: 100%; 
+          min-height: 100vh; 
+          margin: 0; 
+          padding: 0; 
+          
+          /* CORREÇÃO MOBILE: Remove o efeito elástico */
+          overscroll-behavior: none; 
+          
+          font-family: 'Roboto', sans-serif; 
+          background-color: var(--background); 
+          color: var(--text-main); 
+          transition: background-color 0.3s ease, color 0.3s ease; 
+          padding-bottom: 60px; 
+          -webkit-font-smoothing: antialiased; 
+      }
       body { background-color: var(--background); color: var(--text-main); font-family: 'Roboto', sans-serif; transition: background-color 0.3s ease, color 0.3s ease; padding-bottom: 60px; -webkit-font-smoothing: antialiased; }
       
       /* --- COMPONENTES UI --- */
