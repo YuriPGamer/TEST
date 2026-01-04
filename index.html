@@ -13,18 +13,16 @@
     
     <script>
       (function() {
-        // 1. TEMA
         try {
           if (localStorage.getItem('theme') === 'dark') {
             document.documentElement.setAttribute('data-theme', 'dark');
           }
         } catch (e) {}
 
-        // 2. SESSÃO (Anti-Flash do Login)
         try {
           const token = localStorage.getItem('appEscolar_token');
           const lastActive = localStorage.getItem('appEscolar_lastActive');
-          const timeout = 25 * 60 * 1000; // 25 minutos
+          const timeout = 25 * 60 * 1000; 
           const agora = Date.now();
 
           if (token && lastActive && (agora - parseInt(lastActive) < timeout)) {
@@ -53,82 +51,57 @@
         --shadow-sm: 0 1px 3px rgba(0,0,0,0.5); --shadow-md: 0 4px 15px rgba(0,0,0,0.5);
       }
 
-      /* --- RESET & ESTRUTURA --- */
+      /* --- ESTRUTURA GERAL --- */
       html { width: 100%; overflow-x: hidden; }
-
-      body { 
-          width: 100%; 
-          min-height: 100dvh; 
-          margin: 0; 
-          padding: 0; 
-          background-color: var(--background); 
-          color: var(--text-main); 
-          font-family: 'Roboto', sans-serif; 
-          transition: background-color 0.3s ease, color 0.3s ease; 
-          padding-bottom: 60px; 
-          -webkit-font-smoothing: antialiased; 
-      }
+      body { width: 100%; min-height: 100dvh; margin: 0; padding: 0; background-color: var(--background); color: var(--text-main); font-family: 'Roboto', sans-serif; transition: background-color 0.3s ease, color 0.3s ease; padding-bottom: 60px; -webkit-font-smoothing: antialiased; }
       
       /* --- COMPONENTES UI --- */
       #overlay-loading { position: fixed; inset: 0; background: var(--background); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-      
       .app-bar { background-color: var(--surface-container); padding: 1rem 1.5rem; border-radius: 0 0 var(--radius-card) var(--radius-card); display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border: 1px solid var(--outline-variant); border-top: none; }
       .app-title { font-weight: 700; color: var(--primary); font-size: 1.25rem; }
       .m-card { background-color: var(--surface-container); border-radius: var(--radius-card); padding: 1.5rem; border: 1px solid var(--outline-variant); margin-bottom: 1.5rem; }
-
-      /* --- TABELAS --- */
       .table > tbody > tr > td { background-color: transparent !important; color: var(--text-main) !important; border-color: var(--outline-variant) !important; vertical-align: middle; }
       .table thead th { background-color: var(--bg-header) !important; color: var(--text-secondary) !important; border-bottom: 1px solid var(--outline-variant); border-color: var(--outline-variant) !important; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; white-space: nowrap; padding: 12px; }
       .table-striped > tbody > tr:nth-of-type(odd) > td { background-color: var(--table-stripe) !important; box-shadow: inset 0 0 0 9999px var(--table-stripe) !important; }
       .table-hover tbody tr:hover td { background-color: var(--primary-container) !important; color: var(--on-primary-container) !important; box-shadow: inset 0 0 0 9999px var(--primary-container) !important; }
       .table-hover tbody tr:hover td .text-secondary { color: var(--on-primary-container) !important; opacity: 0.8; }
       .table-responsive { overflow-x: auto; margin-bottom: 1rem; scrollbar-width: thin; scrollbar-color: var(--outline) transparent; }
-
-      /* --- FORMULÁRIOS & BOTÕES --- */
       .form-label { font-size: 0.85rem; color: var(--text-secondary); font-weight: 500; margin-bottom: 6px; margin-left: 4px; }
       .form-select { background-color: var(--background); border: 1px solid var(--outline); color: var(--text-main); border-radius: 12px; padding: 0.75rem 1rem; transition: border-color 0.2s, box-shadow 0.2s; }
       .form-select:disabled { background-color: var(--outline-variant); opacity: 0.4; border-color: transparent; }
       .form-select:focus { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary-container); outline: none; }
-      
       .btn-icon { background: transparent; border: none; color: var(--text-secondary); font-size: 1.2rem; width: 40px; height: 40px; border-radius: 50%; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; }
       .btn-icon:hover { background-color: var(--primary-container); color: var(--on-primary-container); }
-      
       .btn-action { background-color: var(--primary); color: var(--on-primary); border: none; border-radius: var(--radius-btn); padding: 0.5rem 1.2rem; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s ease; box-shadow: var(--shadow-sm); }
       .btn-action.btn-sm { padding: 0.25rem 0.8rem !important; font-size: 0.75rem !important; }
       .btn-action:hover { filter: brightness(1.1); transform: translateY(-1px); box-shadow: var(--shadow-md); }
       .btn-action.success-state { background-color: var(--success) !important; color: var(--on-success) !important; pointer-events: none; box-shadow: none; }
-      
-      /* --- ELEMENTOS DE TEXTO --- */
       .badge-pill { background-color: var(--primary-container); color: var(--on-primary-container); padding: 0.35em 1em; border-radius: 12px; font-size: 0.8rem; font-weight: 600; }
       .meta-tag { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 8px; border: 1px solid var(--outline-variant); color: var(--text-secondary); font-size: 0.8rem; font-weight: 500; background-color: transparent; }
       .meta-tag i { color: var(--primary); font-size: 0.9rem; }
-
-      /* --- MODAL --- */
       .modal-content { background-color: var(--surface-container); color: var(--text-main); border: 1px solid var(--outline-variant); border-radius: var(--radius-card); }
       .modal-header, .modal-footer { border-color: var(--outline-variant); }
       .btn-close { filter: invert(0.5); } [data-theme="dark"] .btn-close { filter: invert(1); }
-
-      /* --- CLASSE UTILITÁRIA DE CABEÇALHO --- */
       .header-style { background-color: var(--bg-header); color: var(--text-secondary); font-family: 'Roboto', sans-serif; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; border-bottom: 1px solid var(--outline-variant); padding: 12px; display: block; border-radius: 4px; }
    
-      /* --- CONTROLE DE SESSÃO (ANTI-FLASH) --- */
+      /* --- CONTROLE DE SESSÃO --- */
       html[data-session="active"] #login-screen { display: none !important; }
       html[data-session="active"] #overlay-loading { display: flex !important; }
       html[data-session="active"] #app-container { display: block !important; }
 
-      /* --- CORREÇÃO HÍBRIDA TELA DE LOGIN (MOBILE) --- */
-      #login-screen { 
-          position: fixed; inset: 0; width: 100%; height: 100dvh; 
-          overflow-y: auto; /* Permite pull-to-refresh */
-          background: var(--background); z-index: 10000; 
-          display: flex; flex-direction: column; justify-content: center; align-items: center; 
-      }
+      /* --- TELA DE LOGIN --- */
+      #login-screen { position: fixed; inset: 0; width: 100%; height: 100dvh; overflow-y: auto; background: var(--background); z-index: 10000; display: flex; flex-direction: column; justify-content: center; align-items: center; }
 
-      /* --- CORREÇÃO PISCADA DO BOTÃO GOOGLE --- */
-      .g_id_signin {
-        min-height: 44px; /* Altura fixa padrão */
+      /* --- CORREÇÃO DO PULO DO BOTÃO (O SEGREDO) --- */
+      /* Cria um espaço fixo para o botão. Se o botão mudar de tamanho, 
+         ele muda DENTRO deste espaço, sem afetar o card. */
+      .login-slot {
+        width: 100%;
+        height: 50px; /* Altura suficiente para o botão carregar sem empurrar */
         display: flex;
         justify-content: center;
+        align-items: center;
+        margin-bottom: 1rem;
       }
     
     </style>
@@ -142,6 +115,7 @@
            <h4 class="mb-2">Acesso Restrito</h4>
            <p class="text-secondary small mb-0">Faça login com sua conta institucional<br>para acessar o sistema.</p>
         </div>
+        
         <div class="d-flex flex-column align-items-center justify-content-center w-100">
             <div id="g_id_onload"
                  data-client_id="10938455862-2def58pdbq68jn5encbplrfl5nhcndpl.apps.googleusercontent.com"
@@ -150,17 +124,19 @@
                  data-itp_support="true">
             </div>
             
-            <div class="g_id_signin" 
-                 data-type="standard" 
-                 data-shape="pill" 
-                 data-theme="outline" 
-                 data-text="signin_with" 
-                 data-size="large" 
-                 data-width="300" 
-                 data-logo_alignment="left">
+            <div class="login-slot">
+                <div class="g_id_signin" 
+                     data-type="standard" 
+                     data-shape="pill" 
+                     data-theme="outline" 
+                     data-text="signin_with" 
+                     data-size="large" 
+                     data-width="250" 
+                     data-logo_alignment="left">
+                </div>
             </div>
             
-            <div id="login-error" class="mt-3 text-danger small fw-bold text-center"></div>
+            <div id="login-error" class="text-danger small fw-bold text-center"></div>
         </div>
       </div>
     </div>
