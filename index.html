@@ -3,9 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-    <meta name="theme-color" content="#000">
-    
+    <meta name="theme-color" content="#fdfcff" id="meta-theme-color">
     <link rel="manifest" href="./manifest.json">
     <link rel="apple-touch-icon" href="./icon.png">
     <link rel="icon" type="image/png" href="./icon.png">
@@ -29,9 +27,21 @@
     
     <script>
       (function() {
+        // Definição das cores EXATAS do seu CSS (--background)
+        const COR_LIGHT = '#fdfcff'; 
+        const COR_DARK = '#111315';  
+
         try {
-          if (localStorage.getItem('theme') === 'dark') {
+          const savedTheme = localStorage.getItem('theme');
+          const metaTheme = document.getElementById('meta-theme-color');
+
+          if (savedTheme === 'dark') {
             document.documentElement.setAttribute('data-theme', 'dark');
+            // Se for dark, já seta a meta tag para escuro imediatamente
+            if (metaTheme) metaTheme.setAttribute('content', COR_DARK);
+          } else {
+            // Garante o claro
+            if (metaTheme) metaTheme.setAttribute('content', COR_LIGHT);
           }
         } catch (e) {}
 
@@ -420,14 +430,31 @@
       window.toggleTheme = function() {
         const htmlTag = document.documentElement;
         const icon = document.getElementById('icon-theme');
+        const metaTheme = document.getElementById('meta-theme-color'); // Pega a meta tag
+        
+        // Cores do fundo (Background) para parecer tela cheia
+        const COR_LIGHT = '#fdfcff';
+        const COR_DARK = '#111315';
+
         const isDark = htmlTag.getAttribute('data-theme') === 'dark';
+        
         if (isDark) {
+          // Mudar para CLARO
           htmlTag.removeAttribute('data-theme');
           if(icon) icon.classList.replace('fa-sun', 'fa-moon');
+          
+          // Muda a barra para a cor do fundo claro
+          if(metaTheme) metaTheme.setAttribute('content', COR_LIGHT); 
+          
           localStorage.setItem('theme', 'light');
         } else {
+          // Mudar para ESCURO
           htmlTag.setAttribute('data-theme', 'dark');
           if(icon) icon.classList.replace('fa-moon', 'fa-sun');
+          
+          // Muda a barra para a cor do fundo escuro
+          if(metaTheme) metaTheme.setAttribute('content', COR_DARK); 
+          
           localStorage.setItem('theme', 'dark');
         }
       };
