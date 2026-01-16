@@ -82,20 +82,18 @@
       body { width: 100%; min-height: 100dvh; margin: 0; padding: 0; background-color: var(--background); color: var(--text-main); font-family: 'Roboto', sans-serif; transition: background-color 0.3s ease, color 0.3s ease; padding-bottom: 60px; -webkit-font-smoothing: antialiased; }
       
       #overlay-loading { position: fixed; inset: 0; background: var(--background); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-.app-bar {
-  background-color: var(--surface-container);
-  padding: 1rem 1.5rem;
-  
-  /* MUDANÇA 1: Arredondar todos os cantos */
-  border-radius: var(--radius-card); 
-  
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  margin-bottom: 2rem;
-  border: 1px solid var(--outline-variant);
-}
+      .app-bar {
+        background-color: var(--surface-container);
+        padding: 1rem 1.5rem;
+        border-radius: var(--radius-card);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 0;
+        margin-bottom: 2rem;
+        border: 1px solid var(--outline-variant);
+      }
+      
       .app-title { font-weight: 700; color: var(--primary); font-size: 1.25rem; }
       .m-card { background-color: var(--surface-container); border-radius: var(--radius-card); padding: 1.5rem; border: 1px solid var(--outline-variant); margin-bottom: 1.5rem; }
       .table > tbody > tr > td { background-color: transparent !important; color: var(--text-main) !important; border-color: var(--outline-variant) !important; vertical-align: middle; }
@@ -125,7 +123,8 @@
       /* --- CONTROLE DE SESSÃO --- */
       html[data-session="active"] #login-screen { display: none !important; }
       html[data-session="active"] #overlay-loading { display: flex !important; }
-      html[data-session="active"] #app-container { display: block !important;   padding-top: 1rem;}
+      #app-container { display: none; padding-top: 2rem; padding-bottom: 2rem; }
+      html[data-session="active"] #app-container { display: block !important; }
 
       /* --- TELA DE LOGIN --- */
       #login-screen { position: fixed; inset: 0; width: 100%; height: 100dvh; overflow-y: auto; background: var(--background); z-index: 10000; display: flex; flex-direction: column; justify-content: center; align-items: center; }
