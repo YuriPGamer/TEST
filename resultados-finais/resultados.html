@@ -223,14 +223,17 @@
       background-color: var(--primary);
       border-color: var(--primary);
     }
-    /* --- DESTAQUE DE LINHA SELECIONADA --- */
-    tr.selected-row > td {
+    
+    /* --- DESTAQUE DE LINHA SELECIONADA (CORRIGIDO) --- */
+    /* Aumentamos a especificidade para vencer o background transparent !important */
+    .table tbody tr.selected-row > td {
       background-color: var(--primary-container) !important;
       color: var(--on-primary-container) !important;
       transition: background-color 0.2s;
     }
+    
     /* Pequeno ajuste para manter a cor da borda sutil */
-    tr.selected-row > td {
+    .table tbody tr.selected-row > td {
       border-bottom-color: rgba(255,255,255,0.1) !important;
     }
 
